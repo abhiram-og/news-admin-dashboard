@@ -1,4 +1,5 @@
-import { api, uploadApi } from './axios';
+import { api, uploadApi } from "@/api/axios";
+
 import type { 
   Article, 
   ArticleFormData, 
