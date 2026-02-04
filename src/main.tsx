@@ -1,20 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { Toaster } from 'sonner';
 import { router } from './router';
-import './index.css';
+import { useAuthStore } from '@/contexts/AuthContext';
+
+function AppBootstrap() {
+  useEffect(() => {
+    useAuthStore.getState().initializeAuth();
+  }, []);
+
+  return <RouterProvider router={router} />;
+}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
-    <Toaster 
-      position="top-right" 
-      richColors 
-      closeButton
-      toastOptions={{
-        duration: 4000,
-      }}
-    />
+    <AppBootstrap />
   </React.StrictMode>
 );

@@ -8,16 +8,15 @@ interface AuthState {
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  
+
   // Actions
   setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   updateToken: (accessToken: string) => void;
   logout: () => void;
-  setLoading: (loading: boolean) => void;
-  
+  initializeAuth: () => Promise<void>;
+
   // Helpers
   isAdmin: () => boolean;
-  canDelete: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -53,17 +52,45 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
-      setLoading: (loading) => {
-        set({ isLoading: loading });
+      initializeAuth: async () => {
+        const token = get().accessToken;
+
+        if (!token) {
+          set({ isLoading: false });
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            'http://127.0.0.1:8000/api/v1/auth/profile/',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!res.ok) throw new Error('Unauthorized');
+
+          const data = await res.json();
+
+          set({
+            user: data.data,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch {
+          set({
+            user: null,
+            accessToken: null,
+            refreshToken: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+        }
       },
 
-      isAdmin: () => {
-        return get().user?.role === 'admin';
-      },
-
-      canDelete: () => {
-        return get().user?.role === 'admin';
-      },
+      isAdmin: () => get().user?.role === 'admin',
     }),
     {
       name: 'auth-storage',
