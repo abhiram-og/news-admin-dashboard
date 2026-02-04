@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Plus, Edit, UserCheck, UserX } from 'lucide-react';
-import { useAuthStore } from '@/contexts/AuthContext';
 import {
   Button,
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
   Badge,
   EmptyState,
 } from '@/components/ui';
@@ -50,7 +47,7 @@ export function UsersPage() {
     //   setUsers(response.results);
     // };
     // fetchUsers();
-    
+
     // Mock data for now
     setTimeout(() => {
       setUsers(mockUsers);
@@ -58,7 +55,7 @@ export function UsersPage() {
     }, 500);
   }, []);
 
-  const handleToggleStatus = async (user: User) => {
+  const handleToggleStatus = async (_user: User) => {
     // TODO: Implement when backend API is ready
     toast.info('User management API not yet implemented');
   };
@@ -153,11 +150,10 @@ export function UsersPage() {
                           </button>
                           <button
                             onClick={() => handleToggleStatus(user)}
-                            className={`rounded-lg p-2 ${
-                              user.is_active
-                                ? 'text-red-600 hover:bg-red-50'
-                                : 'text-green-600 hover:bg-green-50'
-                            }`}
+                            className={`rounded-lg p-2 ${user.is_active
+                              ? 'text-red-600 hover:bg-red-50'
+                              : 'text-green-600 hover:bg-green-50'
+                              }`}
                             title={user.is_active ? 'Deactivate' : 'Activate'}
                           >
                             {user.is_active ? (

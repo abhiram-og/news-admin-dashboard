@@ -5,11 +5,9 @@ import {
   Search,
   Edit,
   Trash2,
-  Eye,
   Archive,
   Send,
   RotateCcw,
-  MoreHorizontal,
 } from 'lucide-react';
 import { articlesApi } from '@/api/articles';
 import { categoriesApi } from '@/api/categories';
@@ -20,8 +18,6 @@ import {
   Select,
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
   StatusBadge,
   EmptyState,
   Pagination,
@@ -31,8 +27,8 @@ import type { Article, Category, PublishStatus } from '@/types';
 
 export function ArticlesPage() {
   const navigate = useNavigate();
-  const { canDelete } = useAuthStore();
-  
+  const { isAdmin } = useAuthStore();
+
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +37,7 @@ export function ArticlesPage() {
     category: 'all' as string,
     search: '',
   });
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -98,8 +94,8 @@ export function ArticlesPage() {
         status === 'published'
           ? 'Article published successfully'
           : status === 'archived'
-          ? 'Article archived'
-          : 'Article moved to drafts'
+            ? 'Article archived'
+            : 'Article moved to drafts'
       );
       fetchArticles();
     } catch (error: any) {
@@ -279,9 +275,9 @@ export function ArticlesPage() {
                               <Archive className="h-4 w-4" />
                             </button>
                           )}
-                          
+
                           <div className="mx-2 h-4 w-px bg-gray-200" />
-                          
+
                           {/* Edit */}
                           <button
                             onClick={() => navigate(`/articles/${article.id}/edit`)}
@@ -290,9 +286,9 @@ export function ArticlesPage() {
                           >
                             <Edit className="h-4 w-4" />
                           </button>
-                          
+
                           {/* Delete (Admin only) */}
-                          {canDelete() && (
+                          {isAdmin() && (
                             <button
                               onClick={() => handleDelete(article.id)}
                               className="rounded-lg p-2 text-red-600 hover:bg-red-50"
@@ -310,7 +306,7 @@ export function ArticlesPage() {
             </div>
           )}
         </CardContent>
-        
+
         {/* Pagination */}
         {!isLoading && articles.length > 0 && (
           <Pagination

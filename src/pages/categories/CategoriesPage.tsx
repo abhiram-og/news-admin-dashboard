@@ -7,8 +7,6 @@ import {
   Input,
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
   EmptyState,
   Modal,
 } from '@/components/ui';
@@ -16,12 +14,12 @@ import { toast } from 'sonner';
 import type { Category } from '@/types';
 
 export function CategoriesPage() {
-  const { canDelete } = useAuthStore();
-  
+  const { isAdmin } = useAuthStore();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
-  
+
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -62,7 +60,7 @@ export function CategoriesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
       toast.error('Category name is required');
       return;
@@ -78,7 +76,7 @@ export function CategoriesPage() {
         await categoriesApi.create(formData);
         toast.success('Category created successfully');
       }
-      
+
       setIsModalOpen(false);
       fetchCategories();
     } catch (error: any) {
@@ -173,7 +171,7 @@ export function CategoriesPage() {
                       >
                         <Edit className="h-4 w-4" />
                       </button>
-                      {canDelete() && (
+                      {isAdmin() && (
                         <button
                           onClick={() => handleDelete(category)}
                           className="rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
