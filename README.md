@@ -131,9 +131,3 @@ server {
         try_files $uri $uri/ /index.html;
     }
 }
-```
-
-## License
-
-MIT
-# news-admin-dashboard
